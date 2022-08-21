@@ -26,6 +26,7 @@ class Database(QObject):
             db.commit()
             print(self.sql_command)
         except sql.errors.DatabaseError:
+            print(self.sql_command)
             print("error 1")
         except sql.errors.InterfaceError:
             print("error 2")
