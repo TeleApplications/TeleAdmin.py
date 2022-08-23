@@ -19,14 +19,18 @@ class Database(QObject):
             cursor = db.cursor()
             if isinstance(self.sql_command, list or tuple):
                 for x in self.sql_command:
-                    cursor.execute(x)
+                    if isinstance(x, tuple):
+                        for y in x:
+                            cursor.execute(y)
+                    else:
+                        cursor.execute(x)
             else:
                 cursor.execute(self.sql_command)
-            self.data.emit([x for x in cursor])
+            output = [x for x in cursor]
+            self.data.emit(output)
             db.commit()
-            print(self.sql_command)
+            return output
         except sql.errors.DatabaseError:
-            print(self.sql_command)
-            print("error 1")
+            print("SQL Command Error")
         except sql.errors.InterfaceError:
-            print("error 2")
+            print("Database Connection Error")
