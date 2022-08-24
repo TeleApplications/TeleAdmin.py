@@ -35,7 +35,7 @@ class CommandWidget(QWidget):
             self.textEdit.clear()
 
         if len(text) > 0:
-            Thread(text, self.setTextEditData).start_()
+            Thread(text, self.setTextEditData).run()
 
         self.lineEdit.clear()
         self.lineEdit.setFocus()
