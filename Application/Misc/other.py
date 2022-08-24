@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QFont, QIcon, QColor
+from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap, QImage
 from PyQt5.QtWidgets import QLineEdit, QPushButton, QTextEdit, QLabel, QTreeWidgetItem, QStackedWidget, QWidget
 
 from Application.Misc.layouts import VBoxLayout
@@ -26,10 +26,12 @@ class TextEdit(QTextEdit):
 
 
 class Label(QLabel):
-    def __init__(self, text: str = "", font_size: int = 9, parent=None):
+    def __init__(self, text: str = "", font_size: int = 9, alignment=None, parent=None):
         super(Label, self).__init__(parent)
         self.setFont(QFont("Open Sans", font_size))
         self.setText(text)
+        if alignment:
+            self.setAlignment(alignment)
 
 
 class Button(QPushButton):
@@ -58,16 +60,17 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.setText(0, text)
 
 
-
 class StackedWidget(QStackedWidget):
     def __init__(self, *args):
         super(StackedWidget, self).__init__()
-        self.args = args
+        self.classes_in_memory = list()
 
         for widget in args:
             self.stack_widget = QWidget()
             self.addWidget(self.stack_widget)
-            StackedWidget.stackWindows(widget(), self.stack_widget)
+            class_in_memory = widget()
+            self.classes_in_memory.append(class_in_memory)
+            StackedWidget.stackWindows(class_in_memory, self.stack_widget)
 
     @staticmethod
     def stackWindows(widget, stack_widget: QWidget):

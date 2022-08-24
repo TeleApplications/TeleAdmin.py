@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QComboBox, QWidget, QSplitter
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
 from Application.Misc.other import Button
 from Application.Misc.thread import Thread
+from json_manager import Json
+
+data = Json().read()["admin"]["karmaEditor"]
 
 
 class KarmaEditor(QWidget):
@@ -28,10 +31,10 @@ class KarmaEditor(QWidget):
         self.loadComboBoxData()
 
     def loadComboBoxData(self):
-        Thread("SELECT UserID from users ORDER BY UserID", self.setComboBoxData).start_()
+        Thread(data["loadData"], self.setComboBoxData).run()
 
     def __unbanButtonFunction(self):
-        Thread("UPDATE users SET Karma=100 WHERE UserID={0}".format(int(self.comboBox.currentText())), None).start_()
+        Thread(data["postData"].format(int(self.comboBox.currentText())), None).run()
         self.loadComboBoxData()
 
     def setComboBoxData(self, items):

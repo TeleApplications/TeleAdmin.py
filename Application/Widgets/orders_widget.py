@@ -1,9 +1,14 @@
+import time
+
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTreeWidget, QWidget, QSizePolicy
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
 from Application.Misc.other import TreeWidgetItem, Button
 from Application.Misc.thread import Thread
+from json_manager import Json
+
+data = Json().read()["orders"]
 
 
 class OrdersWidget(QWidget):
@@ -31,24 +36,32 @@ class OrdersWidget(QWidget):
 
         self.setLayout(self.mainLayout)
 
+        self.refreshDatabase()
+
     def approveButtonFunction(self):
         item = self.treewidget.removeSelectedItem()
         if item:
-            order = item.text(0).split(" ")[1:4:2]
-
+            order = item.text(0).split(" ")[1::2]
             Thread(
-                (f"UPDATE orders SET Status='done' WHERE OrderNumber={order[0]}",
-                 f"UPDATE users SET Karma=Karma + 20 WHERE UserID={order[1]}"), None).start_()
+                [data["approveButton"][0].format(order[0], order[-1]),
+                 data["approveButton"][1].format(order[1])],
+                None).run()
 
     def declineButtonFunction(self):
         item = self.treewidget.removeSelectedItem()
         if item:
-            order = item.text(0).split(" ")[1:4:2]
+            order = item.text(0).split(" ")[1::2]
+
             products = self.treewidget.getChildren(item)
-            Thread([f"UPDATE orders SET Status='canceled' WHERE OrderNumber={order[0]}",
-                    f"UPDATE users SET Karma=Karma - 20 WHERE UserID={order[1]}"] + [
-                       f"UPDATE products SET Amount=Amount + {amount} WHERE Name = '{product}'" for product, amount in
-                       products], None).start_()
+            print(products)
+
+            Thread([data["declineButton"][0].format(order[0], order[-1]),
+                    data["declineButton"][1].format(order[1])] + [
+                       data["declineButton"][2].format(amount,time.strftime("%H:%M:%S"), product) for product, amount in products],
+                   None).run()
+
+    def refreshDatabase(self):
+        Thread(data["refreshDatabase"], self.treewidget.addDatabaseData).run()
 
 
 class TreeWidget(QTreeWidget):
@@ -56,7 +69,6 @@ class TreeWidget(QTreeWidget):
         super(TreeWidget, self).__init__(parent)
         self.setHeaderHidden(True)
         self.setColumnCount(1)
-        self.refreshDatabase()
 
     def addDatabaseData(self, data: list):
         self.clear()
@@ -66,15 +78,6 @@ class TreeWidget(QTreeWidget):
              x[4].split(",")]
             self.addTopLevelItem(topItem)
         self.expandAll()
-
-    def refreshDatabase(self):
-        Thread(
-            "SELECT o.OrderNumber, o.UserID, SUM(p.Price * o.Amount) as OrderPrice, o.ReservedTime,"
-            " GROUP_CONCAT(p.Name, ': ', o.Amount SEPARATOR ',') as Items FROM orders o"
-            " INNER JOIN products p ON p.ProductID = o.ProductID WHERE Status = 'pending'"
-            " GROUP BY o.OrderNumber, ReservedTime ORDER BY o.OrderNumber;",
-            self.addDatabaseData
-        ).start_()
 
     def removeSelectedItem(self):
         root = self.invisibleRootItem()
