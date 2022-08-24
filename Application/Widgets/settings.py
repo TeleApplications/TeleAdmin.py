@@ -6,7 +6,12 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter
 
 from Application.Misc.other import TextEdit
 from Application.Misc.layouts import *
+from json_manager import Json
 
+data = Json().read()["settings"]
+
+
+# right side should be stacked widget not textedit
 
 class SettingsWidget(QWidget):
     def __init__(self, parent=None):
@@ -42,6 +47,4 @@ class SettingsWidget(QWidget):
                 return None
 
     def teAbout(self):
-        text = f"""Application for Telebufet by github.com/<b>Vi-tek</b><br><br>
-© {datetime.date.today().year} schemeXY All Rights Reserved<hr>Powered by: Python 3.10 🐍<hr>Something went wrong?<br>Contact us at: TeleApplications@protonmail.com<hr>credits: @Ma-Tes<br>"""
-        self.textEdit.setText(text)
+        self.textEdit.setText(data["text"].format(u"\u00A9", datetime.date.today().year, u"\U0001F40D"))
