@@ -26,10 +26,9 @@ class Database(QObject):
                         cursor.execute(x)
             else:
                 cursor.execute(self.sql_command)
-            output = [x for x in cursor]
-            self.data.emit(output)
+            self.data.emit([x for x in cursor])
             db.commit()
-            return output
+            print(self.sql_command)
         except sql.errors.DatabaseError:
             print("SQL Command Error")
         except sql.errors.InterfaceError:

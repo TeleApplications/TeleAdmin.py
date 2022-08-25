@@ -1,11 +1,22 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, QSplitter, QListWidget
+import sys as sus
 
-from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import deleteLayout, Button, Label
+import time
+
+from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
+
+from Application.Misc.other import Button, Label, deleteLayout, calculate_lines
 from Application.Misc.thread import Thread
+from json_manager import Json
+from dictionary import Dictionary
 
-import math
+data = Json().read()["offlineOrders"]
+PATH = sus.path[0] + "\Assets\Products"
+
+width = 5
+
+size = QSize(64, 64)
 
 
 class OfflineOrdersWidget(QWidget):
@@ -14,52 +25,81 @@ class OfflineOrdersWidget(QWidget):
 
         self.products_value = float()
         self.idlist = list()
+        self.dictionary = Dictionary()
 
         self.mainLayout = QGridLayout()
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.layout = QGridLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.productList = QListWidget()
-        self.productList.setMaximumWidth(150)
+        self.productList.setFixedWidth(175)
 
-        self.priceLabel = Label("Price: ")
+        self.priceLabel = Label("Price: 0.0 kč")
 
         self.approveButton = Button("Approve")
         self.approveButton.clicked.connect(self.approveButtonFunction)
 
+        self.clearButton = Button("Clear")
+        self.clearButton.clicked.connect(self.clearButtonFunction)
+
         # self.mainLayout.addWidget(QSplitter(Qt.Vertical), 1, 0)
-        self.mainLayout.addWidget(self.productList, 0, 1)
+        self.mainLayout.addWidget(self.productList, 0, 2)
         self.mainLayout.addWidget(self.approveButton, 2, 0)
-        self.mainLayout.addWidget(self.priceLabel, 2, 1)
+        self.mainLayout.addWidget(self.clearButton, 2, 1)
+        self.mainLayout.addWidget(self.priceLabel, 2, 2)
+        self.mainLayout.setColumnStretch(0, 1)
         self.setLayout(self.mainLayout)
-        self.loadData()
 
     def loadData(self):
-        Thread("SELECT ProductID, Name, Price FROM products", self.content).start_()
+        Thread(data["loadData"], self.content).run()
 
     def content(self, items):
-        # deleteLayout(self.mainLayout)
-        layout = QGridLayout()
-        x, y, p = 0, 0, 0
-        while p < len(items):
 
-            if x % 5 == 0:
-                y += 1
-                x = 0
-            button = QPushButton()
-            button.clicked.connect(
-                lambda item_id=items[p][0],product_name=items[p][1], price=items[p][2]: self.buttonFunction(item_id,product_name, price))
-            layout.addWidget(button, y, x)
+        deleteLayout(self.layout)
+        self.layout = QGridLayout()
+        pixmap = QPixmap()
+        item_layout = QGridLayout()
+        item_layout.setContentsMargins(0, 0, 0, 0)
+        items_number = len(items)
+        number_of_lines = calculate_lines(items_number, width)
 
-            x += 1
-            p += 1
-
-        self.mainLayout.addLayout(layout, 0, 0)
+        for x in range(number_of_lines):
+            for y in range(width):
+                if items_number > 0:
+                    items_number -= 1
+                    pixmap.loadFromData(open(PATH + "\\" + items[x * width + y][2].rsplit("/", 1)[1], "rb").read())
+                    button = Button(text=items[x * width + y][0])
+                    button.setIcon(QIcon(pixmap))
+                    button.setIconSize(size)
+                    button.setStyleSheet("QPushButton {text-align: left;}")
+                    button.clicked.connect(
+                        lambda a, product_name=items[x * width + y][0],
+                               price=items[x * width + y][1]: self.buttonFunction(
+                            product_name, price))
+                    item_layout.addWidget(button, x, y)
+                    self.layout.addLayout(item_layout, x, y)
+        self.mainLayout.addLayout(self.layout, 0, 0, 1, 2)
 
 
     def approveButtonFunction(self):
-        print(self.products_value)
+        if self.dictionary.items():
+            Thread(
+                [(data["postData"][0].format(v, 4, k), data["postData"][1].format(v, time.strftime("%H:%M:%S"), k)) for
+                 k, v in self.dictionary.items()], None).run()
+            self.clear()
 
-    def buttonFunction(self, item_id: int, product_name:str, price: float):
-        self.idlist.append(item_id)
+    def clearButtonFunction(self):
+        self.clear()
+
+    def clear(self):
+        self.productList.clear()
+        self.products_value = 0.0
+        self.priceLabel.setText("Price: 0.0 kč")
+        self.dictionary.clear()
+
+    def buttonFunction(self, product_name: str, price: float):
         self.products_value += price
-        self.priceLabel.setText("Price: " + str(self.products_value) + " kč")
-        self.productList.addItem(product_name)
+        self.priceLabel.setText("Price: " + str(round(self.products_value, 0)) + " kč")
+        self.productList.addItem(str(product_name))
+        self.dictionary.add_item(product_name, 1)

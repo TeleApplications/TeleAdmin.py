@@ -28,14 +28,13 @@ class KarmaEditor(QWidget):
         self.mainLayout.addLayout(self.layout)
         self.mainLayout.addWidget(QSplitter(Qt.Vertical))
         self.setLayout(self.mainLayout)
-        self.loadComboBoxData()
 
-    def loadComboBoxData(self):
+    def loadData(self):
         Thread(data["loadData"], self.setComboBoxData).run()
 
     def __unbanButtonFunction(self):
         Thread(data["postData"].format(int(self.comboBox.currentText())), None).run()
-        self.loadComboBoxData()
+        self.loadData()
 
     def setComboBoxData(self, items):
         self.__hideContent(False)

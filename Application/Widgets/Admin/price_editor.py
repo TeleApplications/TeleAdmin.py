@@ -31,7 +31,6 @@ class PriceEditor(QWidget):
         self.btn = Button(text="Post", min_size=None, max_size=None)
         self.btn.clicked.connect(self.postData)
         self.regex = QRegExp("[0-9\.]*")
-        self.loadData()
 
     def resupply(self, items):
         self.leList.clear()

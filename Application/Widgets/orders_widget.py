@@ -36,7 +36,7 @@ class OrdersWidget(QWidget):
 
         self.setLayout(self.mainLayout)
 
-        self.refreshDatabase()
+        self.loadData()
 
     def approveButtonFunction(self):
         item = self.treewidget.removeSelectedItem()
@@ -57,10 +57,11 @@ class OrdersWidget(QWidget):
 
             Thread([data["declineButton"][0].format(order[0], order[-1]),
                     data["declineButton"][1].format(order[1])] + [
-                       data["declineButton"][2].format(amount,time.strftime("%H:%M:%S"), product) for product, amount in products],
+                       data["declineButton"][2].format(amount, time.strftime("%H:%M:%S"), product) for product, amount
+                       in products],
                    None).run()
 
-    def refreshDatabase(self):
+    def loadData(self):
         Thread(data["refreshDatabase"], self.treewidget.addDatabaseData).run()
 
 

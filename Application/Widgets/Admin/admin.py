@@ -16,7 +16,7 @@ class AdminWidget(QWidget):
         self.listWidget = QListWidget()
         self.listWidget.setFont(QFont("Open Sans", 12))
         self.listWidget.currentItemChanged.connect(
-            lambda: self.adminStack.setCurrentIndex(self.listWidget.currentIndex().row()))
+            lambda: self.adminStack.changeIndex(self.listWidget.currentIndex().row()))
 
         self.lineEdit = LineEdit()
         self.adminStack = StackedWidget(KarmaEditor, SuppliesEditor, PriceEditor)

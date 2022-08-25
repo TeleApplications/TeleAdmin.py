@@ -1,7 +1,10 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QSpacerItem, QSizePolicy, QWidget
+import os
 
+import download_images
 from Application.Misc.other import Button, StackedWidget
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
+from Application.Misc.thread import Thread
 from Application.Widgets.Admin.admin import AdminWidget
 from Application.Widgets.command_widget import CommandWidget
 
@@ -9,15 +12,20 @@ from Application.Widgets.command_widget import CommandWidget
 from Application.Widgets.offlineorders_widget import OfflineOrdersWidget
 from Application.Widgets.orders_widget import OrdersWidget
 from Application.Widgets.settings import SettingsWidget
+from Application.Widgets.displayproducts_window import DisplayProductsWindow
+from json_manager import Json
 
 PATH = "\\".join(__file__.split("\\")[0:-1]) + "\\Assets\\"
+data = Json().read()["displayProductsWindow"]
 
 
 class MainWidget(QWidget):
     def __init__(self, parent=None):
         super(MainWidget, self).__init__(parent)
         # init widgets
-        self.stackedWidget = StackedWidget(OrdersWidget,OfflineOrdersWidget, CommandWidget, AdminWidget, SettingsWidget)
+        self.stackedWidget = StackedWidget(OrdersWidget, OfflineOrdersWidget, CommandWidget, AdminWidget,
+                                           SettingsWidget)
+        self.displayProductsWindow = DisplayProductsWindow()
 
         # init buttons
         self.databaseButton = Button(icon_name=PATH + "basket.png", min_size=(50, 50))
@@ -26,15 +34,16 @@ class MainWidget(QWidget):
         self.adminButton = Button(icon_name=PATH + "database.png", min_size=(50, 50))
         self.refreshButton = Button(icon_name=PATH + "refresh.png", min_size=(50, 50))
         self.settingsButton = Button(icon_name=PATH + "settings.png", min_size=(50, 50))
+        self.displayProductsButton = Button(min_size=(50, 50))
 
         # button actions
-        self.databaseButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
-        self.offlineButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
-        self.commandButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
-        self.adminButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(3))
-        self.refreshButton.clicked.connect(lambda: OrdersWidget().treewidget.refreshDatabase())
-        self.settingsButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(4))
-
+        self.databaseButton.clicked.connect(lambda: self.stackedWidget.changeIndex(0))
+        self.offlineButton.clicked.connect(lambda: self.stackedWidget.changeIndex(1))
+        self.commandButton.clicked.connect(lambda: self.stackedWidget.changeIndex(2))
+        self.adminButton.clicked.connect(lambda: self.stackedWidget.changeIndex(3))
+        self.refreshButton.clicked.connect(lambda: self.stackedWidget.classes_in_memory[0].loadData())
+        self.settingsButton.clicked.connect(lambda: self.stackedWidget.changeIndex(4))
+        self.displayProductsButton.clicked.connect(self.manageExternalWindow)
         # layouts
         mainLayout = HBoxLayout()
         buttonLayout = VBoxLayout(margin=(5, 8, 0, 7))
@@ -48,6 +57,7 @@ class MainWidget(QWidget):
         verticalSpacer = QSpacerItem(0, 0, QSizePolicy.Maximum, QSizePolicy.Expanding)
         buttonLayout.addItem(verticalSpacer)
         # settings button
+        buttonLayout.addWidget(self.displayProductsButton)
         buttonLayout.addWidget(self.refreshButton)
         buttonLayout.addWidget(self.settingsButton)
         mainLayout.addLayout(buttonLayout)
@@ -59,6 +69,14 @@ class MainWidget(QWidget):
 
         # set widget layout
         self.setLayout(mainLayout)
+
+    def manageExternalWindow(self):
+        if self.displayProductsWindow is None:
+            self.displayProductsWindow = DisplayProductsWindow()
+            self.displayProductsWindow.show()
+        else:
+            self.displayProductsWindow.destroy()
+            self.displayProductsWindow = None
 
 
 class MainWindow(QMainWindow):

@@ -72,6 +72,15 @@ class StackedWidget(QStackedWidget):
             self.classes_in_memory.append(class_in_memory)
             StackedWidget.stackWindows(class_in_memory, self.stack_widget)
 
+    def changeIndex(self, index):
+        if self.currentIndex() == index:
+            return
+        self.setCurrentIndex(index)
+        try:
+            self.classes_in_memory[index].loadData()
+        except AttributeError:
+            pass
+
     @staticmethod
     def stackWindows(widget, stack_widget: QWidget):
         layout = VBoxLayout(margin=(0, 10, 7, 7))
@@ -79,7 +88,7 @@ class StackedWidget(QStackedWidget):
         stack_widget.setLayout(layout)
 
 
-def deleteLayout(layout):
+def deleteLayout(layout) -> None:
     if layout is not None:
         while layout.count():
             item = layout.takeAt(0)
@@ -88,3 +97,11 @@ def deleteLayout(layout):
                 widget.setParent(None)
             else:
                 deleteLayout(item.layout())
+
+
+def calculate_lines(item_number: int, width: int = 5) -> int:
+    layer_number = item_number // width
+    if item_number % width != 0:
+        layer_number += 1
+
+    return layer_number
