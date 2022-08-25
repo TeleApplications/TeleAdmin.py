@@ -25,7 +25,7 @@ class MainWidget(QWidget):
         # init widgets
         self.stackedWidget = StackedWidget(OrdersWidget, OfflineOrdersWidget, CommandWidget, AdminWidget,
                                            SettingsWidget)
-        self.displayProductsWindow = DisplayProductsWindow()
+        self.displayProductsWindow = None
 
         # init buttons
         self.databaseButton = Button(icon_name=PATH + "basket.png", min_size=(50, 50))

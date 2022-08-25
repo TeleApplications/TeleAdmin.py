@@ -1,22 +1,26 @@
+import time
 import sys as sus
 
-import time
-
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
 
-from Application.Misc.other import Button, Label, deleteLayout, calculate_lines
+from Application.Misc.other import Label, Button, deleteLayout, calculate_lines
 from Application.Misc.thread import Thread
 from json_manager import Json
 from dictionary import Dictionary
 
 data = Json().read()["offlineOrders"]
 PATH = sus.path[0] + "\Assets\Products"
-
 width = 5
-
 size = QSize(64, 64)
+
+
+class Item:
+    def __init__(self, name: str, price: str, url: str):
+        self.name = name
+        self.price = price
+        self.url = PATH + "\\" + url.rsplit("/", 1)[1]
 
 
 class OfflineOrdersWidget(QWidget):
@@ -68,19 +72,19 @@ class OfflineOrdersWidget(QWidget):
             for y in range(width):
                 if items_number > 0:
                     items_number -= 1
-                    pixmap.loadFromData(open(PATH + "\\" + items[x * width + y][2].rsplit("/", 1)[1], "rb").read())
-                    button = Button(text=items[x * width + y][0])
+                    item = Item(*items[x * width + y])
+                    pixmap.loadFromData(open(item.url, "rb").read())
+                    button = Button(text=item.name)
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(size)
                     button.setStyleSheet("QPushButton {text-align: left;}")
                     button.clicked.connect(
-                        lambda a, product_name=items[x * width + y][0],
-                               price=items[x * width + y][1]: self.buttonFunction(
-                            product_name, price))
+                        lambda a, product_name=item.name, price=item.price: self.buttonFunction(product_name, price))
+
                     item_layout.addWidget(button, x, y)
                     self.layout.addLayout(item_layout, x, y)
-        self.mainLayout.addLayout(self.layout, 0, 0, 1, 2)
 
+        self.mainLayout.addLayout(self.layout, 0, 0, 1, 2)
 
     def approveButtonFunction(self):
         if self.dictionary.items():
