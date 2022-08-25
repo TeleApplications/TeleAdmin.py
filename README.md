@@ -1,0 +1,3 @@
+# TeleAdmin.py
+Application for managing orders from TeleBufet.NET
+# COMING SOON...
