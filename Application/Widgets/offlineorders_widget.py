@@ -10,7 +10,7 @@ from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 from dictionary import Dictionary
 
-data = Json().read()["offlineOrders"]
+data = Json().load()["offlineOrders"]
 PATH = sus.path[0] + "\Assets\Products"
 width = 5
 size = QSize(64, 64)

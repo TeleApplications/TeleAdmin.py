@@ -9,7 +9,7 @@ from Application.Misc.thread import DatabaseThread
 from dictionary import Dictionary
 from json_manager import Json
 
-data = Json().read()["displayProductsWindow"]
+data = Json().load()["displayProductsWindow"]
 PATH = "Assets//Products//"
 width = 5
 

@@ -2,7 +2,7 @@ from PyQt5.QtCore import QThread, QObject
 from json_manager import Json
 from database import Database
 
-credentials = Json().read()["credentials"]
+credentials = Json().load()["credentials"]
 
 
 class DatabaseThread(QThread):

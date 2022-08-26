@@ -6,7 +6,7 @@ import urllib.parse
 from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
-data = Json().read()["displayProductsWindow"]
+data = Json().load()["displayProductsWindow"]
 
 
 class DownloadImages:

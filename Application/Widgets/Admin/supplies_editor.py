@@ -9,7 +9,7 @@ from Application.Misc.other import Button, deleteLayout, Label, LineEdit
 from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
-data = Json().read()["admin"]["suppliesEditor"]
+data = Json().load()["admin"]["suppliesEditor"]
 
 
 class SuppliesEditor(QWidget):

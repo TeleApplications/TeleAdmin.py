@@ -6,7 +6,7 @@ from Application.Misc.other import Button
 from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
-data = Json().read()["admin"]["karmaEditor"]
+data = Json().load()["admin"]["karmaEditor"]
 
 
 class KarmaEditor(QWidget):
