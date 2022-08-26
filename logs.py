@@ -13,7 +13,7 @@ class LogManager:
 
     def write(self, text: str, mode: str = "a", new_line: str = "\n"):
         with open(self.file, mode) as f:
-            f.write(f"[{datetime.datetime.now().strftime('%settings.json-%m-%Y %H:%M:%S')}] " + text + new_line)
+            f.write(f"[{datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')}] " + text + new_line)
 
 
 if __name__ == '__main__':
