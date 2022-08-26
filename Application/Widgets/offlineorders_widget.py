@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
 
 from Application.Misc.other import Label, Button, deleteLayout, calculate_lines
-from Application.Misc.thread import Thread
+from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 from dictionary import Dictionary
 
@@ -14,6 +14,9 @@ data = Json().read()["offlineOrders"]
 PATH = sus.path[0] + "\Assets\Products"
 width = 5
 size = QSize(64, 64)
+
+
+# TODO: reserved time changer
 
 
 class Item:
@@ -27,6 +30,7 @@ class OfflineOrdersWidget(QWidget):
     def __init__(self, parent=None):
         super(OfflineOrdersWidget, self).__init__(parent)
 
+        self.getThread, self.postThread = None, None
         self.products_value = float()
         self.idlist = list()
         self.dictionary = Dictionary()
@@ -56,10 +60,10 @@ class OfflineOrdersWidget(QWidget):
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        Thread(data["loadData"], self.content).run()
+        self.getThread = DatabaseThread(data["loadData"], self.content)
+        self.getThread.run()
 
     def content(self, items):
-
         deleteLayout(self.layout)
         self.layout = QGridLayout()
         pixmap = QPixmap()
@@ -73,7 +77,10 @@ class OfflineOrdersWidget(QWidget):
                 if items_number > 0:
                     items_number -= 1
                     item = Item(*items[x * width + y])
-                    pixmap.loadFromData(open(item.url, "rb").read())
+                    try:
+                        pixmap.loadFromData(open(item.url, "rb").read())
+                    except FileNotFoundError:
+                        pixmap.loadFromData(open(PATH + "\\" + "Unknown_Image.jpg", "rb").read())
                     button = Button(text=item.name)
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(size)
@@ -88,9 +95,10 @@ class OfflineOrdersWidget(QWidget):
 
     def approveButtonFunction(self):
         if self.dictionary.items():
-            Thread(
+            self.postThread = DatabaseThread(
                 [(data["postData"][0].format(v, 4, k), data["postData"][1].format(v, time.strftime("%H:%M:%S"), k)) for
-                 k, v in self.dictionary.items()], None).run()
+                 k, v in self.dictionary.items()], None)
+            self.postThread.run()
             self.clear()
 
     def clearButtonFunction(self):
@@ -103,7 +111,8 @@ class OfflineOrdersWidget(QWidget):
         self.dictionary.clear()
 
     def buttonFunction(self, product_name: str, price: float):
+        self.dictionary.add_item(product_name, 1)
         self.products_value += price
         self.priceLabel.setText("Price: " + str(round(self.products_value, 0)) + " kč")
-        self.productList.addItem(str(product_name))
-        self.dictionary.add_item(product_name, 1)
+        self.productList.clear()
+        self.productList.addItems([f"{value}x {key}" for key, value in self.dictionary.items()])

@@ -2,15 +2,12 @@ import os
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QGridLayout
 
 from Application.Misc.other import Label, deleteLayout, calculate_lines
-from Application.Misc.thread import Thread
+from Application.Misc.thread import DatabaseThread
 from dictionary import Dictionary
-from download_images import threaded_downloading
 from json_manager import Json
-
-# TODO: settings reset image cache
 
 data = Json().read()["displayProductsWindow"]
 PATH = "Assets//Products//"
@@ -29,15 +26,18 @@ class DisplayProductsWindow(QWidget):
     def __init__(self):
         super(DisplayProductsWindow, self).__init__()
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.getThread, self.getThread2 = None, None
         self.oldPostition = QPoint()
         self.mainLayout = QGridLayout()
         self.dictionary = Dictionary()
         self.setLayout(self.mainLayout)
-        self.downloadImages()
+
+        self.getThread = DatabaseThread(data["loadDictionary"], self.init_dict)
+        self.getThread2 = DatabaseThread(data["loadData"], self.content)
 
     def loadData(self):
-        Thread(data["loadDictionary"], self.init_dict).run()
-        Thread(data["loadData"], self.content).run()
+        self.getThread.run()
+        self.getThread2.run()
 
     def init_dict(self, items):
         self.dictionary.clear()
@@ -60,7 +60,7 @@ class DisplayProductsWindow(QWidget):
                     item = Item(*items[x * width + y])
                     try:
                         pixmap.loadFromData(self.open_image(PATH + self.dictionary[item.imid]))
-                    except FileNotFoundError:
+                    except (KeyError, FileNotFoundError):
                         pixmap.loadFromData(self.open_image(PATH + "Unknown_Image.jpg"))
 
                     label = Label(alignment=Qt.AlignCenter)
@@ -91,13 +91,6 @@ class DisplayProductsWindow(QWidget):
         else:
             self.showMaximized()
         self.update()
-
-    def downloadImages(self):
-        if len(os.listdir("Assets//Products//")) == 1:
-            Thread(data["loadDictionary"], self.initImages).run()
-
-    def initImages(self, items):
-        threaded_downloading([url for _, url in items])
 
     def show(self) -> None:
         super(DisplayProductsWindow, self).show()

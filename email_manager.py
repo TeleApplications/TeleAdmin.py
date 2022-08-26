@@ -4,9 +4,14 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formatdate
 from email import encoders
 
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 
-class EmailManager:
+
+class EmailManager(QObject):
+    finished = pyqtSignal()
+
     def __init__(self, username: str, password: str, receiver: str, attachments: list = None):
+        super(EmailManager, self).__init__()
         self.username = username
         self.password = password
         self.receiver = receiver
@@ -29,6 +34,7 @@ class EmailManager:
                 msg.attach(part)
         return msg
 
+    @pyqtSlot(MIMEMultipart)
     def send_email(self, message: create_email) -> None:
         try:
             smtpObj = smtplib.SMTP('smtp-mail.outlook.com', 587)
@@ -41,6 +47,7 @@ class EmailManager:
         smtpObj.sendmail(message["From"], message["To"], message.as_string())
 
         smtpObj.quit()
+        self.finished.emit()
 
 
 if __name__ == '__main__':

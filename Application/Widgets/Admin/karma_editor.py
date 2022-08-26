@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QComboBox, QWidget, QSplitter
 
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
 from Application.Misc.other import Button
-from Application.Misc.thread import Thread
+from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
 data = Json().read()["admin"]["karmaEditor"]
@@ -15,6 +15,7 @@ class KarmaEditor(QWidget):
         self.mainLayout = VBoxLayout()
         self.layout = HBoxLayout()
 
+        self.getThread, self.postThread = None, None
         self.comboBox = QComboBox()
         self.comboBox.setMinimumHeight(30)
 
@@ -30,10 +31,13 @@ class KarmaEditor(QWidget):
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        Thread(data["loadData"], self.setComboBoxData).run()
+        self.getThread = DatabaseThread(data["loadData"], self.setComboBoxData)
+        self.getThread.run()
 
     def __unbanButtonFunction(self):
-        Thread(data["postData"].format(int(self.comboBox.currentText())), None).run()
+        self.postThread = DatabaseThread(data["postData"].format(int(self.comboBox.currentText())), None)
+        self.postThread.run()
+
         self.loadData()
 
     def setComboBoxData(self, items):

@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter
 from Application.Misc.other import TextEdit
 from Application.Misc.layouts import *
 from json_manager import Json
+from download_images import DownloadImages
 
 data = Json().read()["settings"]
 
@@ -23,6 +24,8 @@ class SettingsWidget(QWidget):
         self.listWidget.currentItemChanged.connect(self.changeText)
         self.textEdit = TextEdit()
 
+        self.im_downloader = DownloadImages(lock=False)
+
         # splitter
         splitter = QSplitter(Qt.Horizontal)
         splitter.addWidget(self.listWidget)
@@ -34,7 +37,7 @@ class SettingsWidget(QWidget):
         self.setLayout(layout)
 
         # add items
-        self.listWidget.addItems(["About"])
+        self.listWidget.addItems(["About", "Download Images"])
 
     def changeText(self):
         index = self.listWidget.currentIndex().row()
@@ -42,7 +45,7 @@ class SettingsWidget(QWidget):
             case 0:
                 self.teAbout()
             case 1:
-                ...
+                self.im_downloader.download()
             case _:
                 return None
 

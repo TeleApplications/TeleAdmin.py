@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget, QScrollArea
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
 from Application.Misc.other import Button, deleteLayout, Label, LineEdit
-from Application.Misc.thread import Thread
+from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
 data = Json().read()["admin"]["suppliesEditor"]
@@ -56,11 +56,14 @@ class SuppliesEditor(QWidget):
         self.scroll.setWidget(self.scrollContent)
 
     def loadData(self):
-        Thread(data["loadData"], self.resupply).run()
+        self.getThread = DatabaseThread(data["loadData"], self.resupply)
+        self.getThread.run()
 
     def postData(self):
-        Thread([data["postData"].format(amount, time.strftime("%H:%M:%S"), name) for name, amount in
-                zip(self.labelTextAll(), self.lineEditTextAll())], None).run()
+        self.postThread = DatabaseThread(
+            [data["postData"].format(amount, time.strftime("%H:%M:%S"), name) for name, amount in
+             zip(self.labelTextAll(), self.lineEditTextAll())], None)
+        self.postThread.run()
         self.loadData()
 
     def labelTextAll(self):

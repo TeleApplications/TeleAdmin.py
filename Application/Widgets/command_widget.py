@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
 from Application.Misc.other import LineEdit, Button
-from Application.Misc.thread import Thread
+from Application.Misc.thread import DatabaseThread
 from Application.Misc.other import TextEdit
 
 
@@ -35,7 +35,7 @@ class CommandWidget(QWidget):
             self.textEdit.clear()
 
         if len(text) > 0:
-            Thread(text, self.setTextEditData).run()
+            DatabaseThread(text, self.setTextEditData).run()
 
         self.lineEdit.clear()
         self.lineEdit.setFocus()
