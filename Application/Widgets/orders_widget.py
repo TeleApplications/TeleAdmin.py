@@ -8,7 +8,7 @@ from Application.Misc.other import TreeWidgetItem, Button
 from Application.Misc.thread import DatabaseThread
 from json_manager import Json
 
-data = Json().read()["orders"]
+data = Json().load()["orders"]
 
 
 class OrdersWidget(QWidget):

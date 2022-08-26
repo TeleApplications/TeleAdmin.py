@@ -9,7 +9,7 @@ from Application.Misc.layouts import *
 from json_manager import Json
 from download_images import DownloadImages
 
-data = Json().read()["settings"]
+data = Json().load()["settings"]
 
 
 # right side should be stacked widget not textedit

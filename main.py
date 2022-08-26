@@ -16,7 +16,7 @@ from Application.Widgets.displayproducts_window import DisplayProductsWindow
 from email_manager import EmailManager
 from json_manager import Json
 
-data = Json().read()["email"]
+data = Json().load()["email"]
 
 PATH = "\\".join(__file__.split("\\")[0:-1]) + "\\Assets\\"
 
@@ -87,7 +87,7 @@ class MainWidget(QWidget):
 
     def sendEmail(self):
         self.em = EmailManager(data["username"], data["password"], data["receiver"], ["logs.txt", "test.py"])
-        email = self.em.create_email(subject="PEPEGA", attachments=self.em.attachments)
+        email = self.em.create_email(subject="MATES", attachments=self.em.attachments)
         self.thread = Thread(self.em, self.em.send_email, email)
 
         self.thread.run()
