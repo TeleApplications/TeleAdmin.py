@@ -47,10 +47,10 @@ class OfflineOrdersWidget(QWidget):
         self.priceLabel = Label("Price: 0.0 kč")
 
         self.approveButton = Button("Approve")
-        self.approveButton.clicked.connect(self.approveButtonFunction)
+        self.approveButton.clicked.connect(self.__approveButtonFunction)
 
         self.clearButton = Button("Clear")
-        self.clearButton.clicked.connect(self.clearButtonFunction)
+        self.clearButton.clicked.connect(self.__clearButtonFunction)
 
         # self.mainLayout.addWidget(QSplitter(Qt.Vertical), 1, 0)
         self.mainLayout.addWidget(self.productList, 0, 2)
@@ -61,10 +61,10 @@ class OfflineOrdersWidget(QWidget):
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data.get("OOloadData"), self.content)
+        self.getThread = DatabaseThread(data.get("OOloadData"), self.__content)
         self.getThread.run()
 
-    def content(self, items):
+    def __content(self, items):
         deleteLayout(self.layout)
         self.layout = QGridLayout()
         pixmap = QPixmap()
@@ -87,31 +87,32 @@ class OfflineOrdersWidget(QWidget):
                     button.setIconSize(size)
                     button.setStyleSheet("QPushButton {text-align: left;}")
                     button.clicked.connect(
-                        lambda a, product_name=item.name, price=item.price: self.buttonFunction(product_name, price))
+                        lambda a, product_name=item.name, price=item.price: self.__buttonFunction(product_name, price))
 
                     item_layout.addWidget(button, x, y)
                     self.layout.addLayout(item_layout, x, y)
 
         self.mainLayout.addLayout(self.layout, 0, 0, 1, 2)
 
-    def approveButtonFunction(self):
+    def __approveButtonFunction(self):
         if self.dictionary.items():
             self.postThread = DatabaseThread(
-                [(data.get("OOpostData1").format(v, 4, k), data.get("OOpostData2").format(v, time.strftime("%H:%M:%S"), k)) for
+                [(data.get("OOpostData1").format(v, 4, k),
+                  data.get("OOpostData2").format(v, time.strftime("%H:%M:%S"), k)) for
                  k, v in self.dictionary.items()], None)
             self.postThread.run()
-            self.clear()
+            self.__clear()
 
-    def clearButtonFunction(self):
-        self.clear()
+    def __clearButtonFunction(self):
+        self.__clear()
 
-    def clear(self):
+    def __clear(self):
         self.productList.clear()
         self.products_value = 0.0
         self.priceLabel.setText("Price: 0.0 kč")
         self.dictionary.clear()
 
-    def buttonFunction(self, product_name: str, price: float):
+    def __buttonFunction(self, product_name: str, price: float):
         self.dictionary.add_item(product_name, 1)
         self.products_value += price
         self.priceLabel.setText("Price: " + str(round(self.products_value, 0)) + " kč")

@@ -15,6 +15,7 @@ class DownloadImages:
     def __init__(self, lock: bool = True):
         super(DownloadImages, self).__init__()
         self.lock = not lock
+        self.thread = None
 
     def download(self):
         if self.lock:

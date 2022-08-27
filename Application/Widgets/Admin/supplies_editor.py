@@ -18,6 +18,8 @@ class SuppliesEditor(QWidget):
 
     def __init__(self):
         super(SuppliesEditor, self).__init__()
+        self.getThread, self.postThread = None, None
+
         self.scrollLayout = VBoxLayout(margin=(0, 0, 10, 0))
         self.setLayout(self.scrollLayout)
 
@@ -29,10 +31,10 @@ class SuppliesEditor(QWidget):
         self.scrollLayout = VBoxLayout(margin=(10, 10, 10, 10))
         self.scrollContent.setLayout(self.scrollLayout)
         self.btn = Button(text="Post", min_size=None, max_size=None)
-        self.btn.clicked.connect(self.postData)
+        self.btn.clicked.connect(self.__postData)
         self.regex = QRegExp("[0-9]*")
 
-    def resupply(self, items):
+    def __resupply(self, items):
         self.leList.clear()
         self.lblList.clear()
         deleteLayout(self.scrollLayout)
@@ -56,18 +58,18 @@ class SuppliesEditor(QWidget):
         self.scroll.setWidget(self.scrollContent)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data.get("ASEloadData"), self.resupply)
+        self.getThread = DatabaseThread(data.get("ASEloadData"), self.__resupply)
         self.getThread.run()
 
-    def postData(self):
+    def __postData(self):
         self.postThread = DatabaseThread(
             [data.get("ASEpostData").format(amount, time.strftime("%H:%M:%S"), name) for name, amount in
-             zip(self.labelTextAll(), self.lineEditTextAll())], None)
+             zip(self.__labelTextAll(), self.__lineEditTextAll())], None)
         self.postThread.run()
         self.loadData()
 
-    def labelTextAll(self):
+    def __labelTextAll(self):
         return [x.text() for x in self.lblList]
 
-    def lineEditTextAll(self):
+    def __lineEditTextAll(self):
         return [int(x.text()) for x in self.leList]

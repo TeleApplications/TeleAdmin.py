@@ -26,8 +26,8 @@ class OrdersWidget(QWidget):
         self.approveButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.declineButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-        self.approveButton.clicked.connect(self.approveButtonFunction)
-        self.declineButton.clicked.connect(self.declineButtonFunction)
+        self.approveButton.clicked.connect(self.__approveButtonFunction)
+        self.declineButton.clicked.connect(self.__declineButtonFunction)
 
         self.buttonsLayout.addWidget(self.approveButton)
         self.buttonsLayout.addWidget(self.declineButton)
@@ -39,7 +39,7 @@ class OrdersWidget(QWidget):
 
         self.loadData()
 
-    def approveButtonFunction(self):
+    def __approveButtonFunction(self):
         item = self.treewidget.removeSelectedItem()
         if item:
             order = item.text(0).split(" ")[1::2]
@@ -49,7 +49,7 @@ class OrdersWidget(QWidget):
                 None)
             self.postThread.run()
 
-    def declineButtonFunction(self):
+    def __declineButtonFunction(self):
         item = self.treewidget.removeSelectedItem()
         if item:
             order = item.text(0).split(" ")[1::2]
@@ -77,9 +77,9 @@ class TreeWidget(QTreeWidget):
         self.setHeaderHidden(True)
         self.setColumnCount(1)
 
-    def addDatabaseData(self, data: list):
+    def addDatabaseData(self, data_: list):
         self.clear()
-        for x in data:
+        for x in data_:
             topItem = TreeWidgetItem(self, f"ID: {x[0]} UID: {x[1]} Price: {x[2]},- Time: {x[3]}")
             [TreeWidgetItem(topItem, x, 11, True, color=QColor(100, 100, 100)).setDisabled(True) for x in
              x[4].split(",")]
@@ -96,6 +96,7 @@ class TreeWidget(QTreeWidget):
             (item[0].parent() or root).removeChild(item[0])
             return return_val
 
-    def getChildren(self, parent):
+    @staticmethod
+    def getChildren(parent):
         if parent:
             return [parent.child(index).text(0).split(": ") for index in range(parent.childCount())]

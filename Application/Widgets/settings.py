@@ -22,7 +22,7 @@ class SettingsWidget(QWidget):
         # init
         self.listWidget = QListWidget()
         self.listWidget.setFont(QFont("Open Sans", 12))
-        self.listWidget.currentItemChanged.connect(self.changeText)
+        self.listWidget.currentItemChanged.connect(self.__changeText)
         self.textEdit = TextEdit()
 
         self.im_downloader = DownloadImages(lock=False)
@@ -40,15 +40,15 @@ class SettingsWidget(QWidget):
         # add items
         self.listWidget.addItems(["About", "Download Images"])
 
-    def changeText(self):
+    def __changeText(self):
         index = self.listWidget.currentIndex().row()
         match index:
             case 0:
-                self.teAbout()
+                self.__teAbout()
             case 1:
                 self.im_downloader.download()
             case _:
                 return None
 
-    def teAbout(self):
+    def __teAbout(self):
         self.textEdit.setText(data.get("Stext").format(u"\u00A9", datetime.date.today().year, u"\U0001F40D"))

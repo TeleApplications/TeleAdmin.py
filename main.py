@@ -1,7 +1,6 @@
-
 from PyQt5.QtWidgets import QMainWindow, QApplication, QSpacerItem, QSizePolicy, QWidget
 from Application.Misc.thread import Thread
-from download_images import DownloadImages
+# from download_images import DownloadImages
 from Application.Misc.other import Button, StackedWidget
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
 from Application.Widgets.Admin.admin import AdminWidget
@@ -27,7 +26,7 @@ class MainWidget(QWidget):
 
         self.stackedWidget = StackedWidget(OrdersWidget, OfflineOrdersWidget, CommandWidget, AdminWidget,
                                            SettingsWidget)
-        self.displayProductsWindow = None
+        self.em, self.thread, self.displayProductsWindow = None, None, None
 
         # init buttons
         self.databaseButton = Button(icon_name=PATH + "basket.png", min_size=(50, 50))
@@ -85,7 +84,8 @@ class MainWidget(QWidget):
             self.displayProductsWindow = None
 
     def sendEmail(self):
-        self.em = EmailManager(data.get("Eusername"), data.get("Epassword"), data.get("Ereceiver"), ["logs.txt", "test.py"])
+        self.em = EmailManager(data.get("Eusername"), data.get("Epassword"), data.get("Ereceiver"),
+                               ["logs.txt", "test.py"])
         email = self.em.create_email(subject="MATES", attachments=self.em.attachments)
         self.thread = Thread(self.em, self.em.send_email, email)
 
@@ -102,8 +102,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Telebufet Admin App")
         self.widget = MainWidget()
         self.setCentralWidget(self.widget)
-        self.im_downloader = DownloadImages(lock=False)
-        self.im_downloader.download()
+        # self.im_downloader = DownloadImages(lock=False)
+        # self.im_downloader.download()
 
 
 if __name__ == '__main__':

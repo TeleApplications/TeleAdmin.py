@@ -21,23 +21,23 @@ class KarmaEditor(QWidget):
         self.comboBox.setMinimumHeight(30)
 
         self.button = Button(text="Unban! :(")
-        self.button.clicked.connect(self.__unbanButtonFunction)
+        self.button.clicked.connect(self.__postData)
 
         self.mainLayout.addLayout(self.layout)
         self.mainLayout.addWidget(QSplitter(Qt.Vertical))
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data.get("AKEloadData"), self.setComboBoxData)
+        self.getThread = DatabaseThread(data.get("AKEloadData"), self.__setComboBoxData)
         self.getThread.run()
 
-    def __unbanButtonFunction(self):
+    def __postData(self):
         self.postThread = DatabaseThread(data.get("AKEpostData").format(int(self.comboBox.currentText())), None)
         self.postThread.run()
 
         self.loadData()
 
-    def setComboBoxData(self, items):
+    def __setComboBoxData(self, items):
         deleteLayout(self.layout)
         self.comboBox.clear()
         self.comboBox.addItems([str(x[0]) for x in items])

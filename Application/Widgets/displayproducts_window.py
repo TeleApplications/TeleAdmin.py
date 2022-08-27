@@ -1,4 +1,3 @@
-
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QGridLayout
@@ -8,6 +7,7 @@ from Application.Misc.thread import DatabaseThread
 from dictionary import Dictionary
 
 from Application.Misc.dotenv_manager import DotEnv
+
 data = DotEnv()
 
 PATH = "Assets//Products//"
@@ -32,19 +32,19 @@ class DisplayProductsWindow(QWidget):
         self.dictionary = Dictionary()
         self.setLayout(self.mainLayout)
 
-        self.getThread = DatabaseThread(data.get("DPWloadDictionary"), self.init_dict)
-        self.getThread2 = DatabaseThread(data.get("DPWloadData"), self.content)
+        self.getThread = DatabaseThread(data.get("DPWloadDictionary"), self.__init_dict)
+        self.getThread2 = DatabaseThread(data.get("DPWloadData"), self.__content)
 
     def loadData(self):
         self.getThread.run()
         self.getThread2.run()
 
-    def init_dict(self, items):
+    def __init_dict(self, items):
         self.dictionary.clear()
         for image_id, url in items:
             self.dictionary.add_item(image_id, url.rsplit("/", 1)[1])
 
-    def content(self, items):
+    def __content(self, items):
         deleteLayout(self.mainLayout)
 
         pixmap = QPixmap()
@@ -59,9 +59,9 @@ class DisplayProductsWindow(QWidget):
                     layout = QGridLayout()
                     item = Item(*items[x * width + y])
                     try:
-                        pixmap.loadFromData(self.open_image(PATH + self.dictionary[item.imid]))
+                        pixmap.loadFromData(self.__open_image(PATH + self.dictionary[item.imid]))
                     except (KeyError, FileNotFoundError):
-                        pixmap.loadFromData(self.open_image(PATH + "Unknown_Image.jpg"))
+                        pixmap.loadFromData(self.__open_image(PATH + "Unknown_Image.jpg"))
 
                     label = Label(alignment=Qt.AlignCenter)
 
@@ -73,7 +73,8 @@ class DisplayProductsWindow(QWidget):
                     layout.addWidget(Label(item.price, alignment=Qt.AlignRight), 2, 0)
                     self.mainLayout.addLayout(layout, x, y)
 
-    def open_image(self, image):
+    @staticmethod
+    def __open_image(image):
         with open(image, "rb") as f:
             return f.read()
 
