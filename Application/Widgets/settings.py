@@ -4,12 +4,13 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter
 
-from Application.Misc.other import TextEdit
+from Application.Misc.dotenv_manager import DotEnv
 from Application.Misc.layouts import *
-from json_manager import Json
+from Application.Misc.other import TextEdit
+
 from download_images import DownloadImages
 
-data = Json().load()["settings"]
+data = DotEnv()
 
 
 # right side should be stacked widget not textedit
@@ -50,4 +51,4 @@ class SettingsWidget(QWidget):
                 return None
 
     def teAbout(self):
-        self.textEdit.setText(data["text"].format(u"\u00A9", datetime.date.today().year, u"\U0001F40D"))
+        self.textEdit.setText(data.get("Stext").format(u"\u00A9", datetime.date.today().year, u"\U0001F40D"))

@@ -2,11 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QComboBox, QWidget, QSplitter
 
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
-from Application.Misc.other import Button
+from Application.Misc.other import Button, deleteLayout
 from Application.Misc.thread import DatabaseThread
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
 
-data = Json().load()["admin"]["karmaEditor"]
+
+data = DotEnv()
 
 
 class KarmaEditor(QWidget):
@@ -22,30 +23,23 @@ class KarmaEditor(QWidget):
         self.button = Button(text="Unban! :(")
         self.button.clicked.connect(self.__unbanButtonFunction)
 
-        self.__hideContent(True)
-
-        self.layout.addWidget(self.comboBox)
-        self.layout.addWidget(self.button)
         self.mainLayout.addLayout(self.layout)
         self.mainLayout.addWidget(QSplitter(Qt.Vertical))
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data["loadData"], self.setComboBoxData)
+        self.getThread = DatabaseThread(data.get("AKEloadData"), self.setComboBoxData)
         self.getThread.run()
 
     def __unbanButtonFunction(self):
-        self.postThread = DatabaseThread(data["postData"].format(int(self.comboBox.currentText())), None)
+        self.postThread = DatabaseThread(data.get("AKEpostData").format(int(self.comboBox.currentText())), None)
         self.postThread.run()
 
         self.loadData()
 
     def setComboBoxData(self, items):
-        self.__hideContent(False)
+        deleteLayout(self.layout)
         self.comboBox.clear()
         self.comboBox.addItems([str(x[0]) for x in items])
-
-    def __hideContent(self, hide: bool = False):
-        self.comboBox.setHidden(hide)
-        self.button.setHidden(hide)
-        self.update()
+        self.layout.addWidget(self.comboBox)
+        self.layout.addWidget(self.button)

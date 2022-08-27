@@ -7,10 +7,11 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
 
 from Application.Misc.other import Label, Button, deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
+
 from dictionary import Dictionary
 
-data = Json().load()["offlineOrders"]
+data = DotEnv()
 PATH = sus.path[0] + "\Assets\Products"
 width = 5
 size = QSize(64, 64)
@@ -60,7 +61,7 @@ class OfflineOrdersWidget(QWidget):
         self.setLayout(self.mainLayout)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data["loadData"], self.content)
+        self.getThread = DatabaseThread(data.get("OOloadData"), self.content)
         self.getThread.run()
 
     def content(self, items):
@@ -96,7 +97,7 @@ class OfflineOrdersWidget(QWidget):
     def approveButtonFunction(self):
         if self.dictionary.items():
             self.postThread = DatabaseThread(
-                [(data["postData"][0].format(v, 4, k), data["postData"][1].format(v, time.strftime("%H:%M:%S"), k)) for
+                [(data.get("OOpostData1").format(v, 4, k), data.get("OOpostData2").format(v, time.strftime("%H:%M:%S"), k)) for
                  k, v in self.dictionary.items()], None)
             self.postThread.run()
             self.clear()

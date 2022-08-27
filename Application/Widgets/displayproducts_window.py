@@ -1,4 +1,3 @@
-import os
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
@@ -7,9 +6,10 @@ from PyQt5.QtWidgets import QWidget, QGridLayout
 from Application.Misc.other import Label, deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
 from dictionary import Dictionary
-from json_manager import Json
 
-data = Json().load()["displayProductsWindow"]
+from Application.Misc.dotenv_manager import DotEnv
+data = DotEnv()
+
 PATH = "Assets//Products//"
 width = 5
 
@@ -32,8 +32,8 @@ class DisplayProductsWindow(QWidget):
         self.dictionary = Dictionary()
         self.setLayout(self.mainLayout)
 
-        self.getThread = DatabaseThread(data["loadDictionary"], self.init_dict)
-        self.getThread2 = DatabaseThread(data["loadData"], self.content)
+        self.getThread = DatabaseThread(data.get("DPWloadDictionary"), self.init_dict)
+        self.getThread2 = DatabaseThread(data.get("DPWloadData"), self.content)
 
     def loadData(self):
         self.getThread.run()

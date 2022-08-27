@@ -7,10 +7,10 @@ from PyQt5.QtWidgets import QWidget, QScrollArea
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
 from Application.Misc.other import Button, deleteLayout, Label, LineEdit
 from Application.Misc.thread import DatabaseThread
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
 
-data = Json().load()["admin"]["priceEditor"]
 
+data = DotEnv()
 
 class PriceEditor(QWidget):
     leList = list()
@@ -57,12 +57,12 @@ class PriceEditor(QWidget):
         self.scroll.setWidget(self.scrollContent)
 
     def loadData(self):
-        self.getThread = DatabaseThread(data["loadData"], self.resupply)
+        self.getThread = DatabaseThread(data.get("APEloadData"), self.resupply)
         self.getThread.run()
 
     def postData(self):
         self.postThread = DatabaseThread(
-            [data["postData"].format(amount, time.strftime("%H:%M:%S"), name) for name, amount in
+            [data.get("APEpostData").format(amount, time.strftime("%H:%M:%S"), name) for name, amount in
              zip(self.labelTextAll(), self.lineEditTextAll())], None)
         self.postThread.run()
 

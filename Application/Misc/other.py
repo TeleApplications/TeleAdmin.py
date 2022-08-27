@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap, QImage
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QFont, QIcon, QColor
 from PyQt5.QtWidgets import QLineEdit, QPushButton, QTextEdit, QLabel, QTreeWidgetItem, QStackedWidget, QWidget
 
 from Application.Misc.layouts import VBoxLayout

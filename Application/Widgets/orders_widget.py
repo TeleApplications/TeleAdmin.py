@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QTreeWidget, QWidget, QSizePolicy
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
 from Application.Misc.other import TreeWidgetItem, Button
 from Application.Misc.thread import DatabaseThread
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
 
-data = Json().load()["orders"]
+data = DotEnv()
 
 
 class OrdersWidget(QWidget):
@@ -44,8 +44,8 @@ class OrdersWidget(QWidget):
         if item:
             order = item.text(0).split(" ")[1::2]
             self.postThread = DatabaseThread(
-                [data["approveButton"][0].format(order[0], order[-1]),
-                 data["approveButton"][1].format(order[1])],
+                [data.get("OapproveButton1").format(order[0], order[-1]),
+                 data.get("OapproveButton2").format(order[1])],
                 None)
             self.postThread.run()
 
@@ -57,16 +57,17 @@ class OrdersWidget(QWidget):
             products = self.treewidget.getChildren(item)
             print(products)
 
-            self.postThread2 = DatabaseThread([data["declineButton"][0].format(order[0], order[-1]),
-                            data["declineButton"][1].format(order[1])] + [
-                               data["declineButton"][2].format(amount, time.strftime("%H:%M:%S"), product) for
-                               product, amount
-                               in products],
-                           None)
+            self.postThread2 = DatabaseThread([data.get("OdeclineButton1").format(order[0], order[-1]),
+                                               data.get("OdeclineButton2").format(order[1])] + [
+                                                  data.get("OdeclineButton").format(amount, time.strftime("%H:%M:%S"),
+                                                                                    product) for
+                                                  product, amount
+                                                  in products],
+                                              None)
             self.postThread2.run()
 
     def loadData(self):
-        self.getThread = DatabaseThread(data["refreshDatabase"], self.treewidget.addDatabaseData)
+        self.getThread = DatabaseThread(data.get("OrefreshDatabase"), self.treewidget.addDatabaseData)
         self.getThread.run()
 
 

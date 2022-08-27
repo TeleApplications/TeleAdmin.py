@@ -1,6 +1,5 @@
-from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QMainWindow, QApplication, QSpacerItem, QSizePolicy, QWidget
 
+from PyQt5.QtWidgets import QMainWindow, QApplication, QSpacerItem, QSizePolicy, QWidget
 from Application.Misc.thread import Thread
 from download_images import DownloadImages
 from Application.Misc.other import Button, StackedWidget
@@ -14,9 +13,9 @@ from Application.Widgets.orders_widget import OrdersWidget
 from Application.Widgets.settings import SettingsWidget
 from Application.Widgets.displayproducts_window import DisplayProductsWindow
 from email_manager import EmailManager
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
 
-data = Json().load()["email"]
+data = DotEnv()
 
 PATH = "\\".join(__file__.split("\\")[0:-1]) + "\\Assets\\"
 
@@ -86,7 +85,7 @@ class MainWidget(QWidget):
             self.displayProductsWindow = None
 
     def sendEmail(self):
-        self.em = EmailManager(data["username"], data["password"], data["receiver"], ["logs.txt", "test.py"])
+        self.em = EmailManager(data.get("Eusername"), data.get("Epassword"), data.get("Ereceiver"), ["logs.txt", "test.py"])
         email = self.em.create_email(subject="MATES", attachments=self.em.attachments)
         self.thread = Thread(self.em, self.em.send_email, email)
 
@@ -105,7 +104,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.widget)
         self.im_downloader = DownloadImages(lock=False)
         self.im_downloader.download()
-
 
 
 if __name__ == '__main__':
