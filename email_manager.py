@@ -48,12 +48,3 @@ class EmailManager(QObject):
 
         smtpObj.quit()
         self.finished.emit()
-
-
-if __name__ == '__main__':
-    from json_manager import Json
-
-    data = Json().load()["email"]
-    e = EmailManager(data["username"], data["password"], data["receiver"], ["logs.txt", "test.py"])
-    email = e.create_email(subject="TEST", attachments=e.attachments)
-    e.send_email(email)

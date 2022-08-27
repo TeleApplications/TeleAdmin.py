@@ -4,9 +4,9 @@ from urllib.request import urlretrieve
 import urllib.parse
 
 from Application.Misc.thread import DatabaseThread
-from json_manager import Json
+from Application.Misc.dotenv_manager import DotEnv
 
-data = Json().load()["displayProductsWindow"]
+data = DotEnv()
 
 
 class DownloadImages:
@@ -18,7 +18,7 @@ class DownloadImages:
 
     def download(self):
         if self.lock:
-            self.thread = DatabaseThread(data["loadDictionary"], self.threaded_downloading)
+            self.thread = DatabaseThread(data.get("DPWloadDictionary"), self.threaded_downloading)
             self.thread.run()
 
     def threaded_downloading(self, items):
