@@ -3,9 +3,10 @@ from dotenv import load_dotenv
 
 
 class DotEnv:
-    def __init__(self, environment: str = ".env"):
-        self.data = load_dotenv(environment)
+    load_dotenv(".env")
 
-    @staticmethod
-    def get(key: str):
-        return os.getenv(key)
+    def get(self, key: str):
+        return self.__getitem__(key)
+
+    def __getitem__(self, item):
+        return os.getenv(item)
