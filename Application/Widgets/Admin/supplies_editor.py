@@ -29,7 +29,6 @@ class SuppliesEditor(QWidget):
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget(self.scroll)
 
-
         self.scrollLayout = VBoxLayout(margin=(10, 10, 10, 10))
         self.scrollContent.setLayout(self.scrollLayout)
         self.btn = Button(text="Post", min_size=None, max_size=None)
@@ -41,15 +40,15 @@ class SuppliesEditor(QWidget):
         self.lblList.clear()
         deleteLayout(self.scrollLayout)
 
-        for x in items:
+        for product_name, amount in items:
             layout = HBoxLayout()
-            label = QLabel(str(x[0]))
+            label = QLabel(product_name)
             label.setObjectName("product_name")
             lineEdit = QLineEdit()
             lineEdit.setMaximumHeight(20)
             validator = QRegExpValidator(self.regex, lineEdit)
             lineEdit.setValidator(validator)
-            lineEdit.setText(f"{x[1]}")
+            lineEdit.setText(str(amount))
 
 
             self.leList.append(lineEdit)

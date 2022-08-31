@@ -39,15 +39,15 @@ class PriceEditor(QWidget):
         self.lblList.clear()
         deleteLayout(self.scrollLayout)
 
-        for x in items:
+        for product_name, price in items:
             layout = HBoxLayout()
-            label = QLabel(x[0])
+            label = QLabel(product_name)
             label.setObjectName("product_name")
             lineEdit = QLineEdit()
             lineEdit.setMaximumHeight(20)
             validator = QRegExpValidator(self.regex, lineEdit)
             lineEdit.setValidator(validator)
-            lineEdit.setText(str(x[1]))
+            lineEdit.setText(str(price))
 
             self.leList.append(lineEdit)
             self.lblList.append(label)
