@@ -9,6 +9,7 @@ class TextEdit(QTextEdit):
     def __init__(self, parent=None):
         super(TextEdit, self).__init__(parent)
         self.setAcceptRichText(True)
+        self.setReadOnly(True)
 
 
 class Button(QPushButton):
