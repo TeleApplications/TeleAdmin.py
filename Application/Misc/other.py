@@ -1,20 +1,8 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QFont, QIcon, QColor
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QTextEdit, QLabel, QTreeWidgetItem, QStackedWidget, QWidget
+from PyQt5.QtWidgets import QPushButton, QTextEdit, QTreeWidgetItem, QStackedWidget, QWidget
 
 from Application.Misc.layouts import VBoxLayout
-
-
-# class QLineEdit(QLineEdit):
-#     def __init__(self, font_size: int = 9, place_holder_text: str = "", min_size: tuple[int, int] = None,
-#                  max_size: tuple[int, int] = None, parent=None):
-#         super(QLineEdit, self).__init__(parent)
-#         self.setFont(QFont("Open Sans", font_size))
-#         self.setPlaceholderText(place_holder_text)
-#         if max_size is not None:
-#             self.setMaximumSize(max_size[0], max_size[1])
-#         if min_size is not None:
-#             self.setMinimumSize(min_size[0], min_size[1])
 
 
 class TextEdit(QTextEdit):
@@ -40,6 +28,7 @@ class Button(QPushButton):
             self.setMinimumSize(min_size[0], min_size[1])
         if max_size is not None:
             self.setMaximumSize(max_size[0], max_size[1])
+
 
 class TreeWidgetItem(QTreeWidgetItem):
     def __init__(self, parent=None, text: str = "", font_size: int = 12, italic: bool = False,

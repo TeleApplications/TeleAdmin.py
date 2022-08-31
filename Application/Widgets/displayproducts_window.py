@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QGridLayout
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
 
-from Application.Misc.other import QLabel, deleteLayout, calculate_lines
+from Application.Misc.other import deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
 from Application.stylesheets.stylesheet import secondaryStyleSheet
 from dictionary import Dictionary

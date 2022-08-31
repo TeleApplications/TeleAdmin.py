@@ -1,9 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter
+from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter, QLineEdit
 
 from Application.Misc.layouts import HBoxLayout
-from Application.Misc.other import QLineEdit, StackedWidget
+from Application.Misc.other import StackedWidget
 from Application.Widgets.Admin.karma_editor import KarmaEditor
 from Application.Widgets.Admin.price_editor import PriceEditor
 from Application.Widgets.Admin.supplies_editor import SuppliesEditor
@@ -14,7 +13,6 @@ class AdminWidget(QWidget):
         super(AdminWidget, self).__init__(parent)
         # init widgets
         self.listWidget = QListWidget()
-        self.listWidget.setFont(QFont("Open Sans", 12))
         self.listWidget.currentItemChanged.connect(
             lambda: self.adminStack.changeIndex(self.listWidget.currentIndex().row()))
 

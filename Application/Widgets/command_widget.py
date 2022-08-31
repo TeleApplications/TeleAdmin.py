@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QTextEdit
+from PyQt5.QtWidgets import QWidget, QTextEdit, QLineEdit
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import QLineEdit, Button
+from Application.Misc.other import Button
 from Application.Misc.thread import DatabaseThread
-from Application.Misc.other import TextEdit
 
 
 class CommandWidget(QWidget):

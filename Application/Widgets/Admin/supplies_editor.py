@@ -2,10 +2,10 @@ import time
 
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QWidget, QScrollArea
+from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel, QLineEdit
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import Button, deleteLayout, QLabel, QLineEdit
+from Application.Misc.other import Button, deleteLayout
 from Application.Misc.thread import DatabaseThread
 from Application.Misc.dotenv_manager import DotEnv
 
