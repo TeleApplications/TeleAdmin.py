@@ -24,7 +24,7 @@ class TextEdit(QTextEdit):
 
 
 class Button(QPushButton):
-    def __init__(self, text: str = "", object_name: str = None, font_size: int = 10, icon_name: str = "",
+    def __init__(self, text: str = "", object_name: str = None, icon_name: str = "",
                  icon_size: int = 32,
                  min_size: tuple[int, int] or None = None,
                  max_size: tuple[int, int] or None = None, parent=None):
@@ -40,8 +40,6 @@ class Button(QPushButton):
             self.setMinimumSize(min_size[0], min_size[1])
         if max_size is not None:
             self.setMaximumSize(max_size[0], max_size[1])
-        self.setFont(QFont("Open Sans", font_size))
-
 
 class TreeWidgetItem(QTreeWidgetItem):
     def __init__(self, parent=None, text: str = "", font_size: int = 12, italic: bool = False,
