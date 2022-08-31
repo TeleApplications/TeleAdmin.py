@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QFrame
 
 from Application.Misc.other import deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
@@ -12,7 +12,7 @@ from Application.Misc.dotenv_manager import DotEnv
 data = DotEnv()
 
 PATH = "Assets//Products//"
-width = 5
+width = 7
 
 
 class Item:
@@ -58,6 +58,7 @@ class DisplayProductsWindow(QWidget):
             for y in range(width):
                 if items_number > 0:
                     items_number -= 1
+                    frame = QFrame()
                     layout = QGridLayout()
 
                     item = Item(*items[x * width + y])
@@ -72,9 +73,11 @@ class DisplayProductsWindow(QWidget):
                     label.setPixmap(scaled_pixmap)
                     layout.addWidget(label, 0, 0, 1, 2)
                     layout.addWidget(QLabel(item.name), 1, 0, 1, 2)
-                    layout.addWidget(QLabel(item.amount), 2, 1)
                     layout.addWidget(QLabel(item.price), 2, 0)
-                    self.mainLayout.addLayout(layout, x, y)
+                    layout.addWidget(QLabel(item.amount), 3, 0)
+
+                    frame.setLayout(layout)
+                    self.mainLayout.addWidget(frame, x, y)
 
     @staticmethod
     def __open_image(image):
