@@ -24,12 +24,15 @@ class TextEdit(QTextEdit):
 
 
 class Button(QPushButton):
-    def __init__(self, text: str = "", font_size: int = 10, icon_name: str = "", icon_size: int = 32,
+    def __init__(self, text: str = "", object_name: str = None, font_size: int = 10, icon_name: str = "",
+                 icon_size: int = 32,
                  min_size: tuple[int, int] or None = None,
                  max_size: tuple[int, int] or None = None, parent=None):
         super(Button, self).__init__(parent)
 
         self.setText(text)
+        if object_name:
+            self.setObjectName(object_name)
         if len(icon_name) > 0:
             self.setIcon(QIcon(icon_name))
             self.setIconSize(QSize(icon_size, icon_size))
