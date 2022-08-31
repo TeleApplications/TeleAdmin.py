@@ -3,7 +3,7 @@ import sys as sus
 
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
+from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget, QLabel
 
 from Application.Misc.other import Button, deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
