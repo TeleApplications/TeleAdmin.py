@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QSpacerItem, QSizePolicy, QWidget
 from Application.Misc.thread import Thread
-# from download_images import DownloadImages
+
+from Application.stylesheets.stylesheet import mainStyleSheet
 from Application.Misc.other import Button, StackedWidget
 from Application.Misc.layouts import HBoxLayout, VBoxLayout
 from Application.Widgets.Admin.admin import AdminWidget
@@ -100,8 +101,10 @@ class MainWindow(QMainWindow):
         self.resize(self.WIDHT, self.HEIGHT)
         self.setMinimumSize(self.WIDHT, self.HEIGHT)
         self.setWindowTitle("Telebufet Admin App")
+        self.setStyleSheet(mainStyleSheet)
         self.widget = MainWidget()
         self.setCentralWidget(self.widget)
+
         # self.im_downloader = DownloadImages(lock=False)
         # self.im_downloader.download()
 

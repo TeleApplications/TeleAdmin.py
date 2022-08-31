@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QTextEdit
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import LineEdit, Button
+from Application.Misc.other import QLineEdit, Button
 from Application.Misc.thread import DatabaseThread
 from Application.Misc.other import TextEdit
 
@@ -9,12 +9,11 @@ from Application.Misc.other import TextEdit
 class CommandWidget(QWidget):
     def __init__(self, parent=None):
         super(CommandWidget, self).__init__(parent)
-        self.textEdit = TextEdit()
+        self.textEdit = QTextEdit()
         self.postThread = None
 
-        self.lineEdit = LineEdit(
-            place_holder_text="Enter a SQL command! (Do not touch if you don't know how to work with it!)",
-            font_size=10, min_size=(100, 30))
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText("Enter a SQL command! (Do not touch if you don't know how to work with it!)")
         self.button = Button(text="Send", min_size=(100, 30))
         self.button.clicked.connect(self.__postData)
         layout = VBoxLayout()

@@ -5,33 +5,22 @@ from PyQt5.QtWidgets import QLineEdit, QPushButton, QTextEdit, QLabel, QTreeWidg
 from Application.Misc.layouts import VBoxLayout
 
 
-class LineEdit(QLineEdit):
-    def __init__(self, font_size: int = 9, place_holder_text: str = "", min_size: tuple[int, int] = None,
-                 max_size: tuple[int, int] = None, parent=None):
-        super(LineEdit, self).__init__(parent)
-        self.setFont(QFont("Open Sans", font_size))
-        self.setPlaceholderText(place_holder_text)
-        if max_size is not None:
-            self.setMaximumSize(max_size[0], max_size[1])
-        if min_size is not None:
-            self.setMinimumSize(min_size[0], min_size[1])
+# class QLineEdit(QLineEdit):
+#     def __init__(self, font_size: int = 9, place_holder_text: str = "", min_size: tuple[int, int] = None,
+#                  max_size: tuple[int, int] = None, parent=None):
+#         super(QLineEdit, self).__init__(parent)
+#         self.setFont(QFont("Open Sans", font_size))
+#         self.setPlaceholderText(place_holder_text)
+#         if max_size is not None:
+#             self.setMaximumSize(max_size[0], max_size[1])
+#         if min_size is not None:
+#             self.setMinimumSize(min_size[0], min_size[1])
 
 
 class TextEdit(QTextEdit):
     def __init__(self, parent=None):
         super(TextEdit, self).__init__(parent)
-        self.setReadOnly(True)
-        self.setFont(QFont("Open Sans", 12))
         self.setAcceptRichText(True)
-
-
-class Label(QLabel):
-    def __init__(self, text: str = "", font_size: int = 9, alignment=None, parent=None):
-        super(Label, self).__init__(parent)
-        self.setFont(QFont("Open Sans", font_size))
-        self.setText(text)
-        if alignment:
-            self.setAlignment(alignment)
 
 
 class Button(QPushButton):
@@ -61,16 +50,17 @@ class TreeWidgetItem(QTreeWidgetItem):
 
 
 class StackedWidget(QStackedWidget):
-    def __init__(self, *args):
+    def __init__(self, *args, size: tuple[int, int, int, int] = (0, 7, 7, 7)):
         super(StackedWidget, self).__init__()
         self.classes_in_memory = list()
+        self.size = size
 
         for widget in args:
             self.stack_widget = QWidget()
             self.addWidget(self.stack_widget)
             class_in_memory = widget()
             self.classes_in_memory.append(class_in_memory)
-            StackedWidget.stackWindows(class_in_memory, self.stack_widget)
+            self.stackWindows(class_in_memory, self.stack_widget)
 
     def changeIndex(self, index):
         if self.currentIndex() == index:
@@ -81,9 +71,8 @@ class StackedWidget(QStackedWidget):
         except AttributeError:
             pass
 
-    @staticmethod
-    def stackWindows(widget, stack_widget: QWidget):
-        layout = VBoxLayout(margin=(0, 10, 7, 7))
+    def stackWindows(self, widget, stack_widget: QWidget):
+        layout = VBoxLayout(margin=(self.size[0], self.size[1], self.size[2], self.size[3]))
         layout.addWidget(widget)
         stack_widget.setLayout(layout)
 

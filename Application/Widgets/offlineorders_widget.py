@@ -5,7 +5,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget
 
-from Application.Misc.other import Label, Button, deleteLayout, calculate_lines
+from Application.Misc.other import QLabel, Button, deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
 from Application.Misc.dotenv_manager import DotEnv
 
@@ -44,7 +44,7 @@ class OfflineOrdersWidget(QWidget):
         self.productList = QListWidget()
         self.productList.setFixedWidth(175)
 
-        self.priceLabel = Label("Price: 0.0 kč")
+        self.priceLabel = QLabel("Price: 0.0 kč")
 
         self.approveButton = Button("Approve")
         self.approveButton.clicked.connect(self.__approveButtonFunction)

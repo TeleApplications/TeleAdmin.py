@@ -3,7 +3,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter
 
 from Application.Misc.layouts import HBoxLayout
-from Application.Misc.other import LineEdit, StackedWidget
+from Application.Misc.other import QLineEdit, StackedWidget
 from Application.Widgets.Admin.karma_editor import KarmaEditor
 from Application.Widgets.Admin.price_editor import PriceEditor
 from Application.Widgets.Admin.supplies_editor import SuppliesEditor
@@ -18,8 +18,8 @@ class AdminWidget(QWidget):
         self.listWidget.currentItemChanged.connect(
             lambda: self.adminStack.changeIndex(self.listWidget.currentIndex().row()))
 
-        self.lineEdit = LineEdit()
-        self.adminStack = StackedWidget(KarmaEditor, SuppliesEditor, PriceEditor)
+        self.lineEdit = QLineEdit()
+        self.adminStack = StackedWidget(KarmaEditor, SuppliesEditor, PriceEditor, size=(0, 0, 0, 0))
 
         # splitter
         self.splitter = QSplitter(Qt.Horizontal)

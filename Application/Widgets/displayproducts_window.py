@@ -2,8 +2,9 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
-from Application.Misc.other import Label, deleteLayout, calculate_lines
+from Application.Misc.other import QLabel, deleteLayout, calculate_lines
 from Application.Misc.thread import DatabaseThread
+from Application.stylesheets.stylesheet import secondaryStyleSheet
 from dictionary import Dictionary
 
 from Application.Misc.dotenv_manager import DotEnv
@@ -26,6 +27,7 @@ class DisplayProductsWindow(QWidget):
     def __init__(self):
         super(DisplayProductsWindow, self).__init__()
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet(secondaryStyleSheet)
         self.getThread, self.getThread2 = None, None
         self.oldPostition = QPoint()
         self.mainLayout = QGridLayout()
@@ -57,20 +59,21 @@ class DisplayProductsWindow(QWidget):
                 if items_number > 0:
                     items_number -= 1
                     layout = QGridLayout()
+
                     item = Item(*items[x * width + y])
                     try:
                         pixmap.loadFromData(self.__open_image(PATH + self.dictionary[item.imid]))
                     except (KeyError, FileNotFoundError):
                         pixmap.loadFromData(self.__open_image(PATH + "Unknown_Image.jpg"))
 
-                    label = Label(alignment=Qt.AlignCenter)
+                    label = QLabel()
 
                     scaled_pixmap = pixmap.scaled(128, 128, Qt.KeepAspectRatio)
                     label.setPixmap(scaled_pixmap)
                     layout.addWidget(label, 0, 0, 1, 2)
-                    layout.addWidget(Label(item.name, font_size=10, alignment=Qt.AlignCenter), 1, 0, 1, 2)
-                    layout.addWidget(Label(item.amount), 2, 1)
-                    layout.addWidget(Label(item.price, alignment=Qt.AlignRight), 2, 0)
+                    layout.addWidget(QLabel(item.name), 1, 0, 1, 2)
+                    layout.addWidget(QLabel(item.amount), 2, 1)
+                    layout.addWidget(QLabel(item.price), 2, 0)
                     self.mainLayout.addLayout(layout, x, y)
 
     @staticmethod

@@ -5,7 +5,7 @@ from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QWidget, QScrollArea
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import Button, deleteLayout, Label, LineEdit
+from Application.Misc.other import Button, deleteLayout, QLabel, QLineEdit
 from Application.Misc.thread import DatabaseThread
 from Application.Misc.dotenv_manager import DotEnv
 
@@ -20,13 +20,15 @@ class SuppliesEditor(QWidget):
         super(SuppliesEditor, self).__init__()
         self.getThread, self.postThread = None, None
 
-        self.scrollLayout = VBoxLayout(margin=(0, 0, 10, 0))
+        self.scrollLayout = VBoxLayout()
+
         self.setLayout(self.scrollLayout)
 
         self.scroll = QScrollArea()
         self.scrollLayout.addWidget(self.scroll)
         self.scroll.setWidgetResizable(True)
         self.scrollContent = QWidget(self.scroll)
+
 
         self.scrollLayout = VBoxLayout(margin=(10, 10, 10, 10))
         self.scrollContent.setLayout(self.scrollLayout)
@@ -41,11 +43,14 @@ class SuppliesEditor(QWidget):
 
         for x in items:
             layout = HBoxLayout()
-            label = Label(str(x[0]), font_size=12)
-            lineEdit = LineEdit(font_size=12, max_size=(250, 20))
+            label = QLabel(str(x[0]))
+            label.setObjectName("product_name")
+            lineEdit = QLineEdit()
+            lineEdit.setMaximumHeight(20)
             validator = QRegExpValidator(self.regex, lineEdit)
             lineEdit.setValidator(validator)
             lineEdit.setText(f"{x[1]}")
+
 
             self.leList.append(lineEdit)
             self.lblList.append(label)
