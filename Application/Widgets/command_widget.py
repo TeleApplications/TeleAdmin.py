@@ -1,14 +1,14 @@
-from PyQt5.QtWidgets import QWidget, QTextEdit, QLineEdit
+from PyQt5.QtWidgets import QWidget, QLineEdit
 
 from Application.Misc.layouts import VBoxLayout, HBoxLayout
-from Application.Misc.other import Button
+from Application.Misc.other import Button, TextEdit
 from Application.Misc.thread import DatabaseThread
 
 
 class CommandWidget(QWidget):
     def __init__(self, parent=None):
         super(CommandWidget, self).__init__(parent)
-        self.textEdit = QTextEdit()
+        self.textEdit = TextEdit()
         self.postThread = None
 
         self.lineEdit = QLineEdit()

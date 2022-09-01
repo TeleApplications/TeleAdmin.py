@@ -1,7 +1,7 @@
 import time
 import sys as sus
 
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QGridLayout, QListWidget, QLabel
 
@@ -18,6 +18,7 @@ size = QSize(64, 64)
 
 
 # TODO: reserved time changer
+#         refresh second window
 
 
 class Item:
@@ -37,12 +38,12 @@ class OfflineOrdersWidget(QWidget):
         self.dictionary = Dictionary()
 
         self.mainLayout = QGridLayout()
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
         self.layout = QGridLayout()
+
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.productList = QListWidget()
-        self.productList.setFixedWidth(175)
 
         self.priceLabel = QLabel("Price: 0.0 kč")
 
@@ -67,6 +68,7 @@ class OfflineOrdersWidget(QWidget):
     def __content(self, items):
         deleteLayout(self.layout)
         self.layout = QGridLayout()
+        # self.layout.setContentsMargins(0, 0, 0, 0)
         pixmap = QPixmap()
         item_layout = QGridLayout()
         item_layout.setContentsMargins(0, 0, 0, 0)
@@ -92,7 +94,7 @@ class OfflineOrdersWidget(QWidget):
                     item_layout.addWidget(button, x, y)
                     self.layout.addLayout(item_layout, x, y)
 
-        self.mainLayout.addLayout(self.layout, 0, 0, 1, 2)
+        self.mainLayout.addLayout(self.layout, 0, 0, 0, 2)
 
     def __approveButtonFunction(self):
         if self.dictionary.items():

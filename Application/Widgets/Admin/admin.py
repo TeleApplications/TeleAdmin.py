@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QSplitter, QLineEdit
 
 from Application.Misc.layouts import HBoxLayout
 from Application.Misc.other import StackedWidget
-from Application.Widgets.Admin.karma_editor import KarmaEditor
 from Application.Widgets.Admin.price_editor import PriceEditor
+from Application.Widgets.Admin.karma_editor import KarmaEditor
 from Application.Widgets.Admin.supplies_editor import SuppliesEditor
 
 
