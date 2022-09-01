@@ -17,7 +17,7 @@ from Application.Misc.dotenv_manager import DotEnv
 
 data = DotEnv()
 
-PATH = "\\".join(__file__.split("\\")[0:-1]) + "\\Assets\\"
+PATH = "Assets\\"
 
 
 class MainWidget(QWidget):
@@ -30,15 +30,15 @@ class MainWidget(QWidget):
         self.em, self.thread, self.displayProductsWindow = None, None, None
 
         # init buttons
-        self.databaseButton = Button(icon_name=PATH + "basket.png", min_size=(50, 50))
-        self.offlineButton = Button(min_size=(50, 50))
-        self.adminButton = Button(icon_name=PATH + "database.png", min_size=(50, 50))
-        self.commandButton = Button(icon_name=PATH + "command.png", min_size=(50, 50))
+        self.databaseButton = Button(icon_name=PATH + "basket.png", min_size=(50, 50), object_name="circle_button")
+        self.offlineButton = Button(min_size=(50, 50), object_name="circle_button")
+        self.adminButton = Button(icon_name=PATH + "database.png", min_size=(50, 50), object_name="circle_button")
+        self.commandButton = Button(icon_name=PATH + "command.png", min_size=(50, 50), object_name="circle_button")
 
-        self.refreshButton = Button(icon_name=PATH + "refresh.png", min_size=(50, 50))
-        self.displayProductsButton = Button(min_size=(50, 50))
-        self.sendEmailButton = Button(min_size=(50, 50))
-        self.settingsButton = Button(icon_name=PATH + "settings.png", min_size=(50, 50))
+        self.refreshButton = Button(icon_name=PATH + "refresh.png", min_size=(50, 50), object_name="circle_button")
+        self.displayProductsButton = Button(min_size=(50, 50), object_name="circle_button")
+        self.sendEmailButton = Button(min_size=(50, 50), object_name="circle_button")
+        self.settingsButton = Button(icon_name=PATH + "settings.png", min_size=(50, 50), object_name="circle_button")
         # button actions
         self.databaseButton.clicked.connect(lambda: self.stackedWidget.changeIndex(0))
         self.offlineButton.clicked.connect(lambda: self.stackedWidget.changeIndex(1))
